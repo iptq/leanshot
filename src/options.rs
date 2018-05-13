@@ -16,7 +16,7 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn new(region: Region, outfile: PathBuf, clip: bool) -> Result<Options, Error> {
+    pub fn new(region: Region, outfile: String, clip: bool) -> Result<Options, Error> {
         OpenOptions::new().create(true).write(true).open(&outfile)?;
         let outfile = canonicalize(&outfile)?;
         Ok(Options {

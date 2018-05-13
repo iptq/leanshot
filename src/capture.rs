@@ -6,6 +6,7 @@ use gdk::prelude::*;
 use gdk::{ContextExt, Display, DisplayExt, Screen, ScreenExt, Window as GdkWindow, WindowExt};
 use gdk_pixbuf::Pixbuf;
 use gtk::{Clipboard, ClipboardExt};
+use time;
 
 use errors::ScreenshotError;
 use options::{Options, Region};
@@ -36,6 +37,7 @@ pub fn capture(options: Options) -> Result<(), Error> {
         Some(window_) => window = window_,
         None => bail!("Failed to locate root window."),
     }
+    window.process_updates(true);
 
     // take a screenshot of it
     let width: i32 = window.get_width();
@@ -61,7 +63,10 @@ pub fn capture(options: Options) -> Result<(), Error> {
     ctx.paint();
 
     // write surface to file
-    let mut file = File::create(options.outfile)?;
+
+    let now = time::now();
+    let path = time::strftime(&options.outfile.as_os_str().to_str().unwrap(), &now)?;
+    let mut file = File::create(path)?;
     surface.write_to_png(&mut file)?;
 
     if options.clip {

@@ -8,6 +8,7 @@ extern crate failure;
 extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gtk;
+extern crate time;
 
 mod capture;
 mod errors;
@@ -62,7 +63,7 @@ fn run() -> Result<(), Error> {
         "select" | "selection" => Region::Selection,
         _ => bail!("Please choose a valid region [fullscreen|active|select]"),
     };
-    let path = PathBuf::from(app.value_of("output").unwrap());
+    let path = String::from(app.value_of("output").unwrap());
     let clip = app.is_present("clip");
     let options = Options::new(region, path, clip)?;
 
