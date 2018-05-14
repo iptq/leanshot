@@ -1,29 +1,43 @@
+use std::ffi::CString;
+
 use failure::Error;
-use gdk::ContextExt;
-use gdk_pixbuf::Pixbuf;
-use gtk::{
-    self, ContainerExt, DrawingArea, GtkWindowExt, Inhibit, WidgetExt, Window as GtkWindow,
-    WindowType,
-};
+use gdk_pixbuf::{Pixbuf, PixbufExt};
+
+use errors::ScreenshotError;
+use slop::{slop_options, slop_select};
 
 pub fn select_area(pixbuf: Pixbuf) -> Result<Pixbuf, Error> {
-    let window = GtkWindow::new(WindowType::Popup);
-    let mut pixbuf2 = pixbuf.clone();
-    let drawing_area = Box::new(DrawingArea::new)();
-    drawing_area.connect_draw(move |_, cr| {
-        cr.set_source_pixbuf(&pixbuf, 0.0, 0.0);
-        cr.paint();
+    let xdisplay = CString::new(":0")?.as_ptr();
 
-        Inhibit(false)
-    });
-    window.add(&drawing_area);
+    let mut options = slop_options {
+        quiet: 0,
+        border: 1.0,
+        padding: 1.0,
+        tolerance: 1.0,
+        highlight: 0,
+        nokeyboard: 0,
+        noopengl: 1,
+        nodecorations: 1,
+        shaders: &mut 0,
+        r: 0.7,
+        g: 0.7,
+        b: 0.7,
+        a: 1.0,
+        xdisplay,
+    };
+    let selection = unsafe { slop_select(&mut options) };
+    println!("{:?}", selection);
 
-    window.connect_key_release_event(|_, key| {
-        println!("{:?}", key.get_keyval());
-        Inhibit(false)
-    });
-
-    window.show_all();
-    gtk::main();
-    Ok(pixbuf2)
+    if selection.cancelled == 1 {
+        bail!(ScreenshotError);
+    }
+    match pixbuf.new_subpixbuf(
+        selection.x.round() as i32,
+        selection.y.round() as i32,
+        selection.w.round() as i32,
+        selection.h.round() as i32,
+    ) {
+        Some(pixbuf) => Ok(pixbuf),
+        None => bail!(ScreenshotError),
+    }
 }

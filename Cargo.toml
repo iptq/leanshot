@@ -2,9 +2,7 @@
 name = "screenshot"
 version = "0.1.0"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
-
-[build-dependencies]
-cmake = "0.1.31"
+build = "src/build.rs"
 
 [dependencies]
 clap = "2.31.2"
@@ -12,5 +10,6 @@ cairo-rs = { version = "0.4.1", features = ["png"] }
 failure = "0.1.1"
 gdk = "0.8.0"
 gdk-pixbuf = "0.4.0"
+gio = "0.4.0"
 gtk = { version = "0.4.1", features = ["v3_16"] }
 time = "0.1.40"

@@ -7,6 +7,7 @@ extern crate clap;
 extern crate failure;
 extern crate gdk;
 extern crate gdk_pixbuf;
+extern crate gio;
 extern crate gtk;
 extern crate time;
 
@@ -14,8 +15,8 @@ mod capture;
 mod errors;
 mod options;
 mod selection;
+mod slop;
 
-use std::path::PathBuf;
 use std::process::exit;
 
 use clap::{App, Arg};

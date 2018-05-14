@@ -4,7 +4,7 @@ use cairo::{Context, Format, ImageSurface};
 use failure::Error;
 use gdk::prelude::*;
 use gdk::{ContextExt, Display, DisplayExt, Screen, ScreenExt, Window as GdkWindow, WindowExt};
-use gdk_pixbuf::Pixbuf;
+use gdk_pixbuf::{Pixbuf, PixbufExt};
 use gtk::{Clipboard, ClipboardExt};
 use time;
 
@@ -48,10 +48,12 @@ pub fn capture(options: Options) -> Result<(), Error> {
     }?;
 
     // launch selection
-    // let pixbuf = match options.region {
-    //     Region::Selection => select_area(pixbuf)?,
-    //     _ => pixbuf,
-    // };
+    let pixbuf = match options.region {
+        Region::Selection => select_area(pixbuf)?,
+        _ => pixbuf,
+    };
+    let width = pixbuf.get_width();
+    let height = pixbuf.get_height();
 
     // create and draw to the surface
     let surface = match ImageSurface::create(Format::Rgb24, width, height) {
