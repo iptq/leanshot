@@ -11,6 +11,7 @@ addons:
   apt:
     packages:
     - cmake
+    - libglew-dev
     - libglm-dev
     - libgtk-3-dev
 
@@ -40,3 +41,6 @@ deploy:
     tags: true
     repo: iptq/screenshot
   skip_cleanup: true
+
+notifications:
+  email: false
