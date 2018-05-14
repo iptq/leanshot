@@ -11,6 +11,7 @@ addons:
   apt:
     packages:
     - cmake
+    - libglm-dev
     - libgtk-3-dev
 
 before_script:
