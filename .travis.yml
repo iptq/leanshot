@@ -9,6 +9,7 @@ matrix:
 sudo: true
 addons:
   apt:
+    update: true
     packages:
     - cmake
     - libgles2-mesa-dev
