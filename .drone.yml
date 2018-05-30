@@ -2,5 +2,10 @@ pipeline:
   build:
     image: rust:1.25.0
     commands:
+      - apt-get update -y && apt-get install -y libgtk-3-dev
       - cargo check
       - cargo build --release
+
+cache:
+  mount:
+    - target
