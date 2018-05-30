@@ -75,8 +75,9 @@ pub fn capture(options: Options) -> Result<(), Error> {
         match Clipboard::get_default(&display) {
             Some(clipboard) => {
                 clipboard.set_image(&pixbuf);
+                clipboard.store();
             }
-            None => (),
+            None => eprintln!("Failed to copy to the clipboard."),
         }
     }
     Ok(())
