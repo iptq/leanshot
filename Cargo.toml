@@ -1,6 +1,6 @@
 [package]
 name = "screenshot"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
 
 [workspace]
