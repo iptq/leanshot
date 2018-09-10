@@ -2,14 +2,13 @@ language: rust
 sudo: required
 dist: trusty
 
-rust:
-  - stable
-  - nightly
-
 matrix:
   fast_finish: true
   include:
     - os: linux
+      rust:
+        - stable
+        - nightly
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'sourceline': 'deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main']
