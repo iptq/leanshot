@@ -12,12 +12,6 @@ matrix:
 services:
   - docker
 
-before_script:
-- git clone https://github.com/naelstrof/slop.git
-- cd slop
-- cmake -DCMAKE_INSTALL_PREFIX="/usr" ./
-- make && sudo make install
-
 script:
   - if [ -z "$TRAVIS_TAG" ]; then cargo test --all; fi
 
