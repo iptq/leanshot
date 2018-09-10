@@ -1,28 +1,25 @@
-use std::fs::{canonicalize, OpenOptions};
 use std::path::PathBuf;
 
-use failure::Error;
-
+#[derive(StructOpt)]
 pub enum Region {
+    #[structopt(name = "fullscreen")]
     Fullscreen,
+
+    #[structopt(name = "window")]
     ActiveWindow,
+
+    #[structopt(name = "select")]
     Selection,
 }
 
+#[derive(StructOpt)]
 pub struct Options {
+    #[structopt(subcommand)]
     pub region: Region,
-    pub outfile: PathBuf,
-    pub clip: bool,
-}
 
-impl Options {
-    pub fn new(region: Region, outfile: String, clip: bool) -> Result<Options, Error> {
-        OpenOptions::new().create(true).write(true).open(&outfile)?;
-        let outfile = canonicalize(&outfile)?;
-        Ok(Options {
-            region,
-            outfile,
-            clip,
-        })
-    }
+    #[structopt(short = "o", long = "out", parse(from_os_str))]
+    pub outfile: PathBuf,
+
+    #[structopt(short = "c")]
+    pub clipboard: bool,
 }
