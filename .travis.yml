@@ -2,24 +2,6 @@ language: rust
 sudo: required
 dist: trusty
 
-matrix:
-  fast_finish: true
-  include:
-    - os: linux
-      rust:
-        - stable
-        - nightly
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'sourceline': 'deb http://ppa.launchpad.net/keithw/glfw3/ubuntu trusty main']
-          packages: ['cmake', 'libgles2-mesa-dev', 'libglew-dev', 'libglfw3-dev', 'libglm-dev', 'libgtk-3-dev']
-
-services:
-  - docker
-
-script:
-  - if [ -z "$TRAVIS_TAG" ]; then cargo test --all; fi
-
 before_deploy:
   - ./ci/build-release.sh dip ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
 
