@@ -4,7 +4,7 @@ use failure::Error;
 use gdk_pixbuf::{Pixbuf, PixbufExt};
 
 use errors::ScreenshotError;
-use slop::{slop_options, slop_select};
+use slop_sys::{slop_options, slop_select};
 
 pub fn select_area(pixbuf: Pixbuf) -> Result<Pixbuf, Error> {
     let xdisplay = CString::new(":0")?.as_ptr();

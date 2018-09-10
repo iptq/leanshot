@@ -9,13 +9,13 @@ extern crate gdk;
 extern crate gdk_pixbuf;
 extern crate gio;
 extern crate gtk;
+extern crate slop_sys;
 extern crate time;
 
 mod capture;
 mod errors;
 mod options;
 mod selection;
-mod slop;
 
 use std::process::exit;
 
@@ -42,22 +42,19 @@ fn run() -> Result<(), Error> {
                 .help("The region to be captured.")
                 .takes_value(false)
                 .required(true),
-        )
-        .arg(
+        ).arg(
             Arg::with_name("output")
                 .alias("o")
                 .long("output")
                 .help("Specify the output file.")
                 .takes_value(true)
                 .required(true),
-        )
-        .arg(
+        ).arg(
             Arg::with_name("clip")
                 .alias("c")
                 .long("clip")
                 .help("Copies the image to the clipboard if set."),
-        )
-        .get_matches();
+        ).get_matches();
     let region = match app.value_of("region").unwrap() {
         "fullscreen" => Region::Fullscreen,
         "active" | "window" => Region::ActiveWindow,

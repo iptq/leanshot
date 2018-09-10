@@ -1,0 +1,3 @@
+[submodule "slop-sys/slop"]
+	path = slop-sys/slop
+	url = https://github.com/naelstrof/slop.git

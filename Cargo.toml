@@ -2,7 +2,9 @@
 name = "screenshot"
 version = "0.2.3"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
-build = "src/build.rs"
+
+[workspace]
+members = [".", "slop-sys"]
 
 [dependencies]
 clap = "2.31.2"
@@ -13,3 +15,4 @@ gdk-pixbuf = "0.4.0"
 gio = "0.4.0"
 gtk = { version = "0.4.1", features = ["v3_16"] }
 time = "0.1.40"
+slop-sys = { path = "slop-sys" }
