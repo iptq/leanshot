@@ -1,7 +1,7 @@
 use std::ffi::CString;
 
 use libc;
-use x11::xlib::{self, *};
+use x11::xlib::*;
 
 use errors::ScreenshotError;
 use image::Image;
@@ -14,13 +14,13 @@ pub struct GUI {
 impl GUI {
     pub fn new() -> Result<Self, ScreenshotError> {
         let display_str = CString::new(":0").unwrap();
-        let display = unsafe { xlib::XOpenDisplay(display_str.as_ptr()) };
+        let display = unsafe { XOpenDisplay(display_str.as_ptr()) };
         if display.is_null() {
             return Err(ScreenshotError::XError {
                 message: format!("failed to open display"),
             });
         }
-        unsafe { XGrabServer(display) };
+        // unsafe { XGrabServer(display) };
         Ok(GUI { display })
     }
 
@@ -44,7 +44,7 @@ impl GUI {
         let attr = self.get_window_attributes(window)?;
         println!("got window attributes");
         let image = unsafe {
-            xlib::XGetImage(
+            XGetImage(
                 self.display,
                 window,
                 (*attr).x,
@@ -60,14 +60,15 @@ impl GUI {
 
     /// Get the full screen.
     pub fn get_root_window(&self) -> Window {
-        unsafe { xlib::XRootWindow(self.display, 0) as Window }
+        unsafe { XRootWindow(self.display, 0) as Window }
     }
 
     /// Get the active window.
     pub fn get_active_window(&self) -> Window {
-        let mut window: Window = unsafe { ::std::mem::uninitialized() };
-        let mut revert_to_return: i32 = unsafe { ::std::mem::uninitialized() };
-        unsafe { xlib::XGetInputFocus(self.display, &mut window, &mut revert_to_return) };
+        let mut window: Window = self.get_root_window();
+        let mut revert_to_return: i32 = RevertToParent;
+        unsafe { XGetInputFocus(self.display, &mut window, &mut revert_to_return) };
+        unsafe { XMapRaised(self.display, window) };
         window
     }
 
@@ -79,6 +80,6 @@ impl GUI {
 
 impl Drop for GUI {
     fn drop(&mut self) {
-        unsafe { XUngrabServer(self.display) };
+        // unsafe { XUngrabServer(self.display) };
     }
 }

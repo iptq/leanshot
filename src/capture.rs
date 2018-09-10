@@ -11,7 +11,6 @@ pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
         Region::Fullscreen | Region::Selection => gui.get_root_window(),
         Region::ActiveWindow => gui.get_active_window(),
     };
-    println!("capturing window: {}", window_to_capture);
 
     let mut capture = gui.window_capture(window_to_capture)?;
     println!("captured the window");
