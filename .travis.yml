@@ -1,6 +1,6 @@
 language: rust
 sudo: required
-dist: precise
+dist: trusty
 
 rust:
   - stable
