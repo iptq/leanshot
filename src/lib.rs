@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate failure;
+extern crate libc;
+extern crate png;
 #[macro_use]
 extern crate structopt;
 extern crate time;
@@ -11,20 +13,14 @@ mod gui;
 mod image;
 mod options;
 
-use failure::Error;
 use structopt::StructOpt;
 
-use options::Options;
+pub use capture::capture;
+pub use options::Options;
 
 pub struct Rectangle {
     pub x: u32,
     pub y: u32,
     pub width: u32,
     pub height: u32,
-}
-
-pub fn run() -> Result<(), Error> {
-    let opt = Options::from_args();
-    capture::capture(&opt)?;
-    Ok(())
 }

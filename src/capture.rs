@@ -5,16 +5,16 @@ use image::Image;
 use options::{Options, Region};
 
 pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
-    let gui = GUI::new();
+    let gui = GUI::new()?;
 
     let window_to_capture = match opt.region {
         Region::Fullscreen | Region::Selection => gui.get_root_window(),
         Region::ActiveWindow => gui.get_active_window(),
     };
-    println!("Got window_to_capture: {:?}", window_to_capture);
+    println!("capturing window: {}", window_to_capture);
 
     let mut capture = gui.window_capture(window_to_capture)?;
-    println!("Captured the window.");
+    println!("captured the window");
 
     // let final_capture = match opt.region {
     //     Region::Fullscreen | Region::ActiveWindow => window_capture,
@@ -24,7 +24,6 @@ pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
     if let Region::Selection = opt.region {
         let region = gui.interactive_select(&capture)?;
         capture.apply_region(&region);
-        println!("Subimaged.");
     };
 
     Ok(capture)

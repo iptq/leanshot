@@ -9,6 +9,8 @@ crate-type = ["dylib", "rlib"]
 
 [dependencies]
 failure = "0.1"
+png = "0.12"
+libc = "0.2"
 structopt = "0.2"
 time = "0.1"
 x11 = { version = "2.18", features = ["xlib"] }

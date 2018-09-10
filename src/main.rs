@@ -1,13 +1,13 @@
+extern crate failure;
 extern crate screenshot;
+extern crate structopt;
 
-use std::process::exit;
+use failure::Error;
+use screenshot::{capture, Options};
+use structopt::StructOpt;
 
-fn main() {
-    match screenshot::run() {
-        Ok(()) => (),
-        Err(error) => {
-            eprintln!("Error: {}", error);
-            exit(1);
-        }
-    }
+pub fn main() -> Result<(), Error> {
+    let opt = Options::from_args();
+    let image = capture(&opt)?;
+    image.write_png(opt.outfile).map_err(|err| err.into())
 }
