@@ -24,6 +24,11 @@ impl Display {
         Ok(Display { inner })
     }
 
+    /// Gets the raw X Display handle
+    pub fn as_raw(&self) -> *mut x::Display {
+        self.inner
+    }
+
     /// Returns the root window for the given screen.
     pub fn get_root_window(&self, screen: i32) -> Result<Window, X11Error> {
         let inner = unsafe { x::XRootWindow(self.inner, screen) };

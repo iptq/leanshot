@@ -2,8 +2,11 @@ language: rust
 sudo: required
 dist: trusty
 
+script:
+  - ./ci/check.sh screenshot
+
 before_deploy:
-  - ./ci/build-release.sh dip ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
+  - ./ci/build-release.sh screenshot ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
 
 deploy:
   - provider: releases

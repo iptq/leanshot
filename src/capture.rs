@@ -2,12 +2,10 @@ use errors::ScreenshotError;
 
 use gui::GUI;
 use options::{Options, Region};
-use xlib::Image;
 
-use ImageExt;
 use Rectangle;
 
-pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
+pub fn capture(opt: &Options) -> Result<(), ScreenshotError> {
     let gui = GUI::new()?;
 
     // let window_to_capture = match opt.region {
@@ -17,7 +15,7 @@ pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
     let window_to_capture = gui.display.get_default_root_window()?;
 
     let capture = gui.capture_window(window_to_capture)?;
-    let clip = match opt.region {
+    let _clip = match opt.region {
         Region::ActiveWindow => {
             let win = gui.get_active_window()?;
             let attr = win.get_attributes()?;
@@ -35,7 +33,8 @@ pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
         _ => None,
     };
 
-    capture.write_png(&opt.outfile, clip)?;
+    // capture.write_png(&opt.outfile, clip)?;
+    capture.save_image(&opt.outfile)?;
 
     // let final_capture = match opt.region {
     //     Region::Fullscreen | Region::ActiveWindow => window_capture,
@@ -47,5 +46,5 @@ pub fn capture(opt: &Options) -> Result<Image, ScreenshotError> {
     //     capture.apply_region(&region);
     // };
 
-    Ok(capture)
+    Ok(())
 }

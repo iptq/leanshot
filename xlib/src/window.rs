@@ -1,5 +1,6 @@
 use std::mem;
 
+use imlib2::Drawable;
 use libc;
 use x11::xlib as x;
 
@@ -47,6 +48,12 @@ impl Window {
             )
         };
         Ok(Image { inner: image })
+    }
+}
+
+impl AsRef<Drawable> for Window {
+    fn as_ref(&self) -> &Drawable {
+        &self.inner
     }
 }
 

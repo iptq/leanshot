@@ -1,4 +1,5 @@
 use xlib::{Display, Image, Window};
+use imlib2::{Image as Image2,};
 
 use errors::ScreenshotError;
 use Rectangle;
@@ -14,14 +15,14 @@ impl GUI {
     }
 
     /// Captures the window and produces a DynamicImage.
-    pub fn capture_window(&self, window: Window) -> Result<Image, ScreenshotError> {
+    pub fn capture_window(&self, window: Window) -> Result<Image2, ScreenshotError> {
         let attr = window.get_attributes()?;
-        let width = attr.get_width();
-        let height = attr.get_height();
+        let width = attr.get_width() as i32;
+        let height = attr.get_height() as i32;
         let root = self.display.get_default_root_window()?;
         let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
-        println!("x={} y={} width={} height={}", x, y, width, height);
-        window.get_image().map_err(|err| err.into())
+        Image2::context_set_display(self.display.as_raw());
+        Image2::create_from_drawable(window, 0, x, y, width, height, true).map_err(|err| err.into())
     }
 
     /// Get the active window.

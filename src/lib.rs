@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate failure;
+extern crate imlib2;
 extern crate png;
 #[macro_use]
 extern crate structopt;

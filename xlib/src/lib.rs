@@ -6,6 +6,7 @@
 
 #[macro_use]
 extern crate failure;
+extern crate imlib2;
 extern crate libc;
 extern crate x11;
 
