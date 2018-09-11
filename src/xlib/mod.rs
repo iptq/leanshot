@@ -2,8 +2,6 @@
 //!
 //! I need this for my project.
 
-#![deny(missing_docs)]
-
 mod display;
 mod drawable;
 mod errors;

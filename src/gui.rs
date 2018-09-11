@@ -53,7 +53,6 @@ impl GUI {
     }
 
     /// Brings up an interactive selection GUI.
-    #[allow(dead_code)]
     pub fn interactive_select(&self) -> Result<Rectangle, ScreenshotError> {
         let window = SelectWindow::new(&self.display);
         let root = self.display.get_default_root_window()?;
@@ -64,7 +63,8 @@ impl GUI {
         while done == 0 && self.display.pending()? > 0 {
             let ev = self.display.next_event()?;
             match ev.kind() {
-                EventKind::None => (),
+                EventKind::ButtonPress => (),
+                _ => (),
             }
         }
         Err(ScreenshotError::Error)

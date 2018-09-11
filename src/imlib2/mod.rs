@@ -1,7 +1,5 @@
 //! Safe-ish bindings to imlib2 (at least the only parts I need).
 
-#![deny(missing_docs)]
-
 mod errors;
 mod image;
 

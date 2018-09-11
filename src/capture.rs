@@ -3,6 +3,7 @@ use errors::ScreenshotError;
 use gui::GUI;
 use options::{Options, Region};
 
+/// The main capture routine.
 pub fn capture(opt: &Options) -> Result<(), ScreenshotError> {
     let gui = GUI::new()?;
 
