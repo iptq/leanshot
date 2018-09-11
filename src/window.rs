@@ -1,4 +1,4 @@
-use xlib::{Display, Window, Rectangle};
+use xlib::{Display, Rectangle, Window};
 
 use errors::ScreenshotError;
 

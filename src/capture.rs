@@ -11,7 +11,7 @@ pub fn capture(opt: &Options) -> Result<(), ScreenshotError> {
         _ => gui.display.get_default_root_window()?,
     };
 
-    let capture = gui.capture_window(window_to_capture)?;
+    let capture = gui.capture_window(&opt, window_to_capture)?;
     capture.save_image(&opt.outfile)?;
 
     Ok(())

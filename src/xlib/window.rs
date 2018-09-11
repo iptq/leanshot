@@ -1,13 +1,10 @@
 use std::mem;
 
-use imlib2::Drawable;
+// use imlib2::Drawable;
 use libc;
 use x11::xlib as x;
 
-use Display;
-use Image;
-use Rectangle;
-use X11Error;
+use xlib::{Display, Drawable, GetDisplay, Image, Rectangle, X11Error};
 
 /// A wrapper around a window handle.
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -67,35 +64,43 @@ impl Window {
         }
     }
 
-    /// Capture a snapshot of this window.
-    pub fn get_image(&self) -> Result<Image, X11Error> {
-        let attr = self.get_attributes()?;
-        let image = unsafe {
-            x::XGetImage(
-                self.display,
-                self.inner,
-                attr.get_x(),
-                attr.get_y(),
-                attr.get_width(),
-                attr.get_height(),
-                0xffffffff,
-                x::ZPixmap,
-            )
-        };
-        Ok(Image { inner: image })
-    }
-
     /// Get the raw window handle
     pub fn as_raw(&self) -> x::Window {
         self.inner
     }
-}
 
-impl AsRef<Drawable> for Window {
-    fn as_ref(&self) -> &Drawable {
-        &self.inner
+    /// Get image
+    pub fn get_image(&self) -> Result<Image, X11Error> {
+        let attr = self.get_attributes()?;
+        Drawable::get_image(
+            self,
+            Rectangle::new(
+                attr.get_x(),
+                attr.get_y(),
+                attr.get_width(),
+                attr.get_height(),
+            ),
+        )
     }
 }
+
+impl GetDisplay for Window {
+    fn get_display(&self) -> *mut x::Display {
+        self.display
+    }
+}
+
+impl Drawable for Window {
+    fn as_drawable(&self) -> x::Drawable {
+        self.inner
+    }
+}
+
+// impl AsRef<Drawable> for Window {
+//     fn as_ref(&self) -> &Drawable {
+//         &self.inner
+//     }
+// }
 
 impl WindowAttributes {
     /// Gets the width of the window

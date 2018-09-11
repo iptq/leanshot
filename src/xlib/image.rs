@@ -1,6 +1,6 @@
 use x11::xlib as x;
 
-use X11Error;
+use xlib::X11Error;
 
 /// A handle to an XImage.
 pub struct Image {

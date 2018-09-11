@@ -5,7 +5,7 @@ version = "0.3.0"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
 
 [workspace]
-members = [".", "imlib2", "imlib2/imlib2-sys", "xlib"]
+members = [".", "imlib2-sys"]
 
 [lib]
 crate-type = ["dylib", "rlib"]
@@ -13,7 +13,8 @@ crate-type = ["dylib", "rlib"]
 [dependencies]
 failure = "0.1"
 png = "0.12"
-imlib2 = { path = "imlib2" }
+imlib2-sys = { path = "imlib2-sys" }
+libc = "0.2"
 structopt = "0.2"
 time = "0.1"
-xlib = { path = "xlib" }
+x11 = { version = "2.18", features = ["xlib"] }

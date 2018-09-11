@@ -1,14 +1,19 @@
 use std::ffi::CString;
 
+use libc;
 use x11::xlib as x;
 
-use Visual;
-use Window;
-use X11Error;
+use xlib::{Event, Visual, Window, X11Error};
 
 /// A connection to an X server.
 pub struct Display {
     inner: *mut x::Display,
+}
+
+/// Something that's part of a display.
+pub trait GetDisplay {
+    /// Get the current display
+    fn get_display(&self) -> *mut x::Display;
 }
 
 impl Display {
@@ -23,6 +28,18 @@ impl Display {
             return Err(X11Error::DisplayOpenError);
         }
         Ok(Display { inner })
+    }
+
+    /// Get the next event, blocks until an event is reached.
+    pub fn next_event(&self) -> Result<Event, X11Error> {
+        let event =
+            unsafe { libc::malloc(::std::mem::size_of::<x::XAnyEvent>()) as *mut x::XAnyEvent };
+        Event::from_raw(event)
+    }
+
+    /// Returns the number of events that are still pending
+    pub fn pending(&self) -> Result<i32, X11Error> {
+        Ok(unsafe { x::XPending(self.inner) })
     }
 
     /// Gets the raw X Display handle
