@@ -23,12 +23,7 @@ pub fn capture(opt: &Options) -> Result<(), ScreenshotError> {
             let height = attr.get_height();
             let root = gui.display.get_default_root_window()?;
             let (x, y, _) = gui.display.translate_coordinates(win, 0, 0, root)?;
-            Some(Rectangle {
-                x: x as u32,
-                y: y as u32,
-                width,
-                height,
-            })
+            Some(Rectangle::new(x as u32, y as u32, width, height))
         }
         _ => None,
     };

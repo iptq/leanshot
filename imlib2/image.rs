@@ -12,11 +12,6 @@ pub struct Image {
 }
 
 impl Image {
-    /// Set the display for the imlib context.
-    pub fn context_set_display(display: *mut x11::xlib::Display) {
-        unsafe { im::imlib_context_set_display(display as *mut im::_XDisplay) };
-    }
-
     /// Creates an Image from a pixmap.
     pub fn create_from_drawable(
         drawable: impl AsRef<im::Drawable>,
@@ -29,7 +24,14 @@ impl Image {
     ) -> Result<Self, Error> {
         unsafe { im::imlib_context_set_drawable(*drawable.as_ref()) };
         let image = unsafe {
-            im::imlib_create_image_from_drawable(pixmap, x, y, width, height, if grab_x{ 1 } else { 0 }) as im::Imlib_Image
+            im::imlib_create_image_from_drawable(
+                pixmap,
+                x,
+                y,
+                width,
+                height,
+                if grab_x { 1 } else { 0 },
+            ) as im::Imlib_Image
         };
         Ok(Image { inner: image })
     }

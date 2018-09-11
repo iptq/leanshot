@@ -1,5 +1,5 @@
+use imlib2::{self, Image as Image2, Visual};
 use xlib::{Display, Image, Window};
-use imlib2::{Image as Image2,};
 
 use errors::ScreenshotError;
 use Rectangle;
@@ -21,7 +21,8 @@ impl GUI {
         let height = attr.get_height() as i32;
         let root = self.display.get_default_root_window()?;
         let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
-        Image2::context_set_display(self.display.as_raw());
+        imlib2::context_set_display(self.display.as_raw());
+        imlib2::context_set_visual(Visual::default(self.display.as_raw(), 0));
         Image2::create_from_drawable(window, 0, x, y, width, height, true).map_err(|err| err.into())
     }
 
