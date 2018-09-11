@@ -38,6 +38,18 @@ impl Display {
         };
         Ok(window)
     }
+
+    /// eturns the focus window and the current focus state.
+    pub fn get_input_focus(&self) -> Result<(Window, i32), X11Error> {
+        let mut focus_return: x::Window = 0;
+        let mut revert_to_return = 0;
+        unsafe { x::XGetInputFocus(self.inner, &mut focus_return, &mut revert_to_return) };
+        let window = Window {
+            display: self.inner,
+            inner: focus_return,
+        };
+        return Ok((window, revert_to_return));
+    }
 }
 
 impl Drop for Display {

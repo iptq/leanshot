@@ -20,12 +20,10 @@ impl GUI {
 
     /// Get the active window.
     pub fn get_active_window(&self) -> Result<Window, ScreenshotError> {
-        Ok(self.display.get_default_root_window()?)
-        // let mut window: Window = self.display.get_default_root_window();
-        // let mut revert_to_return: i32 = RevertToParent;
-        // unsafe { XGetInputFocus(self.display, &mut window, &mut revert_to_return) };
-        // unsafe { XMapRaised(self.display, window) };
-        // window
+        self.display
+            .get_input_focus()
+            .map(|(window, _)| window)
+            .map_err(|err| err.into())
     }
 
     /// Brings up an interactive selection GUI.
