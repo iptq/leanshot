@@ -9,12 +9,10 @@ extern crate x11;
 
 mod errors;
 mod image;
-mod visual;
 
 pub use errors::Error;
 pub use image::Image;
 pub use imlib2_sys::{Drawable, Pixmap};
-pub use visual::Visual;
 
 /// Set the display for the imlib context.
 pub fn context_set_display(display: *mut x11::xlib::Display) {
@@ -22,6 +20,6 @@ pub fn context_set_display(display: *mut x11::xlib::Display) {
 }
 
 /// Set the visual for the imlib context.
-pub fn context_set_visual(visual: Visual) {
-    unsafe { imlib2_sys::imlib_context_set_visual(visual.inner) };
+pub fn context_set_visual(visual: *mut x11::xlib::Visual) {
+    unsafe { imlib2_sys::imlib_context_set_visual(visual as *mut imlib2_sys::Visual) };
 }

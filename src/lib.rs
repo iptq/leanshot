@@ -11,27 +11,11 @@ mod capture;
 mod errors;
 mod gui;
 mod options;
+mod window;
 
 use structopt::StructOpt;
+use xlib::Rectangle;
 
 pub use capture::capture;
 pub use options::Options;
-
-#[derive(Debug)]
-pub struct Rectangle {
-    pub x: u32,
-    pub y: u32,
-    pub width: u32,
-    pub height: u32,
-}
-
-impl Rectangle {
-    pub fn new(x: u32, y: u32, width: u32, height: u32) -> Self {
-        Rectangle {
-            x,
-            y,
-            width,
-            height,
-        }
-    }
-}
+pub use window::SelectWindow;

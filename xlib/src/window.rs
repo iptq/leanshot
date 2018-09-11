@@ -4,7 +4,9 @@ use imlib2::Drawable;
 use libc;
 use x11::xlib as x;
 
+use Display;
 use Image;
+use Rectangle;
 use X11Error;
 
 /// A wrapper around a window handle.
@@ -20,6 +22,39 @@ pub struct WindowAttributes {
 }
 
 impl Window {
+    /// Create a new window
+    pub fn create(
+        display: &Display,
+        parent: Option<Window>,
+        location: Rectangle,
+    ) -> Result<Window, X11Error> {
+        let parent = match parent {
+            Some(parent) => parent,
+            None => display.get_default_root_window()?,
+        };
+        let visual = display.default_visual(0);
+        let window = unsafe {
+            x::XCreateWindow(
+                display.as_raw(),
+                parent.as_raw(),
+                location.x as i32,
+                location.y as i32,
+                location.width,
+                location.height,
+                0,
+                0,
+                0,
+                visual.as_raw(),
+                0,
+                0 as *mut x::XSetWindowAttributes,
+            )
+        };
+        Ok(Window {
+            display: display.as_raw(),
+            inner: window,
+        })
+    }
+
     /// Get window attributes.
     pub fn get_attributes(&self) -> Result<WindowAttributes, X11Error> {
         let attr = unsafe {
@@ -48,6 +83,11 @@ impl Window {
             )
         };
         Ok(Image { inner: image })
+    }
+
+    /// Get the raw window handle
+    pub fn as_raw(&self) -> x::Window {
+        self.inner
     }
 }
 

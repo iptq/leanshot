@@ -2,6 +2,7 @@ use std::ffi::CString;
 
 use x11::xlib as x;
 
+use Visual;
 use Window;
 use X11Error;
 
@@ -27,6 +28,12 @@ impl Display {
     /// Gets the raw X Display handle
     pub fn as_raw(&self) -> *mut x::Display {
         self.inner
+    }
+
+    /// Gets the default visual
+    pub fn default_visual(&self, screen: i32) -> Visual {
+        let visual = unsafe { x::XDefaultVisual(self.inner, screen) };
+        Visual { inner: visual }
     }
 
     /// Returns the root window for the given screen.
