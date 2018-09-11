@@ -3,7 +3,7 @@ extern crate screenshot;
 extern crate structopt;
 
 use failure::Error;
-use screenshot::{capture, Options};
+use screenshot::{capture, ImageExt, Options};
 use structopt::StructOpt;
 
 pub fn main() -> Result<(), Error> {

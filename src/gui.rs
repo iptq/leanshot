@@ -1,85 +1,36 @@
-use std::ffi::CString;
-
-use libc;
-use x11::xlib::*;
+use xlib::{Display, Image, Window};
 
 use errors::ScreenshotError;
-use image::Image;
 use Rectangle;
 
 pub struct GUI {
-    display: *mut Display,
+    pub(crate) display: Display,
 }
 
 impl GUI {
     pub fn new() -> Result<Self, ScreenshotError> {
-        let display_str = CString::new(":0").unwrap();
-        let display = unsafe { XOpenDisplay(display_str.as_ptr()) };
-        if display.is_null() {
-            return Err(ScreenshotError::XError {
-                message: format!("failed to open display"),
-            });
-        }
-        // unsafe { XGrabServer(display) };
+        let display = Display::connect(":0")?;
         Ok(GUI { display })
     }
 
-    fn get_window_attributes(
-        &self,
-        window: Window,
-    ) -> Result<*mut XWindowAttributes, ScreenshotError> {
-        let attr_size = ::std::mem::size_of::<XWindowAttributes>();
-        let attr = unsafe { libc::malloc(attr_size) as *mut XWindowAttributes };
-        let result = unsafe { XGetWindowAttributes(self.display, window, attr) };
-        if result == 0 {
-            return Err(ScreenshotError::XError {
-                message: format!("failed to get window attributes"),
-            });
-        }
-        Ok(attr)
-    }
-
     /// Captures the window and produces a DynamicImage.
-    pub fn window_capture(&self, window: Window) -> Result<Image, ScreenshotError> {
-        let attr = self.get_window_attributes(window)?;
-        println!("got window attributes");
-        let image = unsafe {
-            XGetImage(
-                self.display,
-                window,
-                (*attr).x,
-                (*attr).y,
-                (*attr).width as u32,
-                (*attr).height as u32,
-                0xffffffff,
-                ZPixmap,
-            )
-        };
-        Ok(Image::from(self.display, image))
-    }
-
-    /// Get the full screen.
-    pub fn get_root_window(&self) -> Window {
-        unsafe { XRootWindow(self.display, 0) as Window }
+    pub fn capture_window(&self, window: Window) -> Result<Image, ScreenshotError> {
+        window.get_image().map_err(|err| err.into())
     }
 
     /// Get the active window.
-    pub fn get_active_window(&self) -> Window {
-        let mut window: Window = self.get_root_window();
-        let mut revert_to_return: i32 = RevertToParent;
-        unsafe { XGetInputFocus(self.display, &mut window, &mut revert_to_return) };
-        unsafe { XMapRaised(self.display, window) };
-        window
+    pub fn get_active_window(&self) -> Result<Window, ScreenshotError> {
+        Ok(self.display.get_default_root_window()?)
+        // let mut window: Window = self.display.get_default_root_window();
+        // let mut revert_to_return: i32 = RevertToParent;
+        // unsafe { XGetInputFocus(self.display, &mut window, &mut revert_to_return) };
+        // unsafe { XMapRaised(self.display, window) };
+        // window
     }
 
     /// Brings up an interactive selection GUI.
+    #[allow(dead_code)]
     pub fn interactive_select(&self, _capture: &Image) -> Result<Rectangle, ScreenshotError> {
         Err(ScreenshotError::Error)
-    }
-}
-
-impl Drop for GUI {
-    fn drop(&mut self) {
-        // unsafe { XUngrabServer(self.display) };
     }
 }

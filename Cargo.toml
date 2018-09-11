@@ -4,13 +4,15 @@ description = "Screenshot capture utility."
 version = "0.3.0"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
 
+[workspace]
+members = [".", "xlib"]
+
 [lib]
 crate-type = ["dylib", "rlib"]
 
 [dependencies]
 failure = "0.1"
 png = "0.12"
-libc = "0.2"
 structopt = "0.2"
 time = "0.1"
-x11 = { version = "2.18", features = ["xlib"] }
+xlib = { path = "xlib" }

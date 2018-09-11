@@ -1,0 +1,10 @@
+[package]
+name = "xlib"
+description = "Safe-ish bindings to xlib (or at least the parts that I need)"
+version = "0.1.0"
+authors = ["Michael Zhang <failed.down@gmail.com>"]
+
+[dependencies]
+failure = "0.1"
+libc = "0.2"
+x11 = { version = "2.18", features = ["xlib"] }
