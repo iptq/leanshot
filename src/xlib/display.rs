@@ -3,7 +3,7 @@ use std::ffi::CString;
 use libc;
 use x11::xlib as x;
 
-use xlib::{Event, Visual, Window, X11Error};
+use xlib::{Cursor, Event, Visual, Window, X11Error};
 
 /// A connection to an X server.
 pub struct Display {
@@ -28,6 +28,18 @@ impl Display {
             return Err(X11Error::DisplayOpenError);
         }
         Ok(Display { inner })
+    }
+
+    /// Wrapper around XCreateFontCursor
+    pub fn create_font_cursor(&self, shape: u32) -> Result<Cursor, X11Error> {
+        let cursor = unsafe { x::XCreateFontCursor(self.inner, shape) as x::Cursor };
+        if cursor == 0 {
+            return Err(X11Error::CreateCursorError);
+        }
+        Ok(Cursor {
+            display: self.inner,
+            inner: cursor,
+        })
     }
 
     /// Get the next event, blocks until an event is reached.
@@ -115,6 +127,11 @@ impl Display {
             }),
         };
         Ok((rx, ry, child))
+    }
+
+    /// Sync
+    pub fn sync(&self, discard: bool) {
+        unsafe { x::XSync(self.inner, if discard { 1 } else { 0 }) };
     }
 
     /// eturns the focus window and the current focus state.

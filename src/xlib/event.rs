@@ -11,8 +11,11 @@ pub struct Event {
 
 /// Type of event
 pub enum EventKind {
-    /// Was a button pressed
+    /// A mouse button was pressed
     ButtonPress,
+
+    /// A mouse button was released
+    ButtonRelease,
 
     /// None event
     None,

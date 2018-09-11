@@ -4,8 +4,8 @@ use xlib::{Display, EventKind, Visual, Window};
 use errors::ScreenshotError;
 use Options;
 use Rectangle;
-use SelectWindow;
 use Region;
+use SelectWindow;
 
 pub struct GUI {
     pub(crate) display: Display,
@@ -36,8 +36,8 @@ impl GUI {
                 y = region.y;
                 width = region.width;
                 height = region.height;
-            },
-            _ => ()
+            }
+            _ => (),
         }
 
         Image2::create_from_drawable(window, 0, x, y, width as i32, height as i32, true)
@@ -60,10 +60,19 @@ impl GUI {
         let root_im = root.get_image();
 
         let mut done = 0;
+        let mut button_press = false;
         while done == 0 && self.display.pending()? > 0 {
             let ev = self.display.next_event()?;
             match ev.kind() {
-                EventKind::ButtonPress => (),
+                EventKind::ButtonPress => {
+                    button_press = true;
+                }
+                EventKind::ButtonRelease => {
+                    if button_press {
+                        done = 1;
+                    }
+                    button_press = false;
+                }
                 _ => (),
             }
         }

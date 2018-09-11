@@ -2,6 +2,9 @@
 #[allow(missing_docs)]
 #[derive(Debug, Fail)]
 pub enum X11Error {
+    #[fail(display = "failed to create cursor")]
+    CreateCursorError,
+
     #[fail(display = "failed to open display")]
     DisplayOpenError,
 

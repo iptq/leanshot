@@ -2,6 +2,7 @@
 //!
 //! I need this for my project.
 
+mod cursor;
 mod display;
 mod drawable;
 mod errors;
@@ -12,6 +13,12 @@ mod rect;
 mod visual;
 mod window;
 
+#[allow(non_upper_case_globals)]
+#[allow(missing_docs)]
+mod cursorfont;
+
+pub use self::cursor::Cursor;
+pub use self::cursorfont::*;
 pub use self::display::{Display, GetDisplay};
 pub use self::drawable::Drawable;
 pub use self::errors::X11Error;
