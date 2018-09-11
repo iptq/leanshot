@@ -25,4 +25,3 @@ pub fn context_set_display(display: *mut x11::xlib::Display) {
 pub fn context_set_visual(visual: Visual) {
     unsafe { imlib2_sys::imlib_context_set_visual(visual.inner) };
 }
-
