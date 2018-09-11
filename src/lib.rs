@@ -1,6 +1,5 @@
 //! Screenshot capturing utility.
 
-#![feature(try_from)]
 #![deny(missing_docs)]
 
 #[macro_use]
