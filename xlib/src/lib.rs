@@ -10,11 +10,11 @@ extern crate libc;
 extern crate x11;
 
 mod display;
-mod error;
+mod errors;
 mod image;
 mod window;
 
 pub use display::Display;
-pub use error::X11Error;
+pub use errors::X11Error;
 pub use image::{Image, ImageByteOrder, PixBuffer};
 pub use window::{Window, WindowAttributes};
