@@ -292,6 +292,20 @@ version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
+name = "leanshot"
+version = "0.1.0"
+dependencies = [
+ "cairo-rs 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "clap 2.31.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gdk 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gdk-pixbuf 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gio 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gtk 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.40"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -348,20 +362,6 @@ dependencies = [
 name = "rustc-demangle"
 version = "0.1.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "screenshot"
-version = "0.1.0"
-dependencies = [
- "cairo-rs 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "clap 2.31.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "gdk 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gdk-pixbuf 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gio 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gtk 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "time 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "strsim"

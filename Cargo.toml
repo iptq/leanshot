@@ -1,6 +1,9 @@
 [package]
-name = "screenshot"
+name = "leanshot"
 version = "0.1.0"
+description = "Takes screenshots."
+license-file = "LICENSE"
+repository = "https://github.com/iptq/screenshot"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
 build = "src/build.rs"
 

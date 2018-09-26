@@ -1,6 +1,3 @@
-#![crate_name = "screenshot"]
-#![crate_type = "bin"]
-
 extern crate cairo;
 extern crate clap;
 #[macro_use]
