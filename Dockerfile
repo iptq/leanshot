@@ -7,6 +7,9 @@ RUN sudo apt-get update -y && sudo apt-get install -y\
     libglu1-mesa-dev \
     libx11-dev \
     libimlib2-dev
+ENV CFLAGS="-I /usr/include -I /usr/include/x86_64-linux-gnu -O3"
+
+# Install nanovg
 
 COPY . ./
 

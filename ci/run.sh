@@ -26,7 +26,7 @@ case $1 in
         echo "Checking using rust-musl-builder"
         docker build -f Dockerfile -t build-"$2"-image .
         docker rm -f build-"$2" || true
-        docker run -it --name build-"$2" $VOLUMES build-"$2"-image bash -c 'cargo check --all'
+        docker run -it --name build-"$2" $VOLUMES build-"$2"-image bash -c 'cargo check -v --all'
         docker rm build-"$2"
         docker rmi build-"$2"-image
         ;;
@@ -34,7 +34,7 @@ case $1 in
         echo "Building static binaries using rust-musl-builder"
         docker build -t build-"$2"-image .
         docker rm -f build-"$2" || true
-        docker run -it --name build-"$2" $VOLUMES build-"$2"-image bash -c 'cargo build --release --all'
+        docker run -it --name build-"$2" $VOLUMES build-"$2"-image bash -c 'cargo build --release -v --all'
         docker cp build-"$2":/home/rust/src/target/x86_64-unknown-linux-musl/release/"$2" "$2"
         docker rm build-"$2"
         docker rmi build-"$2"-image

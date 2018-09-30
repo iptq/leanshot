@@ -1,32 +1,36 @@
-screenshot
-==========
+leanshot
+========
 
 Screenshot-capturing utility.
 
 Installation
 ------------
 
-Check out the releases page.
+So far, only installation from crates.io is supported:
+
+```
+cargo install leanshot
+```
+
+Binary distributions will soon be available on the releases page.
 
 Example Integration
 -------------------
 
+It's nice to have a script like:
+
 ```bash
 #!/bin/bash
-SCREENSHOT=$HOME/.cargo/bin/screenshot
-$SCREENSHOT $1 --clipboard --output "$HOME/Screenshots/Screenshot_%Y%m%d-%H:%M:%S.png"
+SCREENSHOT=$HOME/.cargo/bin/leanshot
+# choose some file to save it to
+FILE="/path/to/screenshot.png"
+$SCREENSHOT $1 -o $FILE
+# optional: copy to clipboard
+XCLIP=/usr/bin/xclip
+$XCLIP -selection clipboard -t image/png -i $FILE
 ```
 
-Building from Source
---------------------
-
-First, clone this repository. Then, run
-
-```
-cargo build
-```
-
-Happy hacking!
+Then, you can bind this script to the keybinds of your choice using your window manager's config.
 
 Contact
 -------
