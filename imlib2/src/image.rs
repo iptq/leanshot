@@ -8,7 +8,7 @@ use Error;
 
 /// A simple wrapper around Imlib_Image
 pub struct Image {
-    inner: im::Imlib_Image,
+    pub(crate) inner: im::Imlib_Image,
 }
 
 impl Image {

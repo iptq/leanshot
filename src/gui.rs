@@ -19,33 +19,26 @@ impl GUI {
     /// Captures the window and produces an Image.
     pub fn capture_window(&self, opt: &Options, window: Window) -> Result<Image2, ScreenshotError> {
         let attr = window.get_attributes()?;
-        let mut width = attr.get_width();
-        let mut height = attr.get_height();
+        let width = attr.get_width();
+        let height = attr.get_height();
         let root = attr.get_root();
-        let (mut x, mut y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
+        let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
 
         imlib2::context_set_display(&self.display);
         let visual = Visual::default(&self.display, 0);
         imlib2::context_set_visual(&visual);
 
-        match opt.region {
-            Region::Selection => {
-                let capture = Image2::create_from_drawable(
-                    window,
-                    0,
-                    x,
-                    y,
-                    width as i32,
-                    height as i32,
-                    true,
-                )?;
-                let region = self.interactive_select(capture)?;
-                x = region.x;
-                y = region.y;
-                width = region.width;
-                height = region.height;
-            }
-            _ => (),
+        if let Region::Selection = opt.region {
+            let capture =
+                Image2::create_from_drawable(window, 0, x, y, width as i32, height as i32, true)?;
+            let region = self.interactive_select(&capture)?;
+            imlib2::context_set_image(&capture);
+            return imlib2::create_scaled_cropped_image(
+                region.x,
+                region.y,
+                region.width,
+                region.height,
+            ).map_err(|err| err.into());
         }
 
         Image2::create_from_drawable(window, 0, x, y, width as i32, height as i32, true)
@@ -61,7 +54,7 @@ impl GUI {
     }
 
     /// Brings up an interactive selection GUI.
-    pub fn interactive_select(&self, capture: Image2) -> Result<Rectangle, ScreenshotError> {
+    pub fn interactive_select(&self, capture: &Image2) -> Result<Rectangle, ScreenshotError> {
         // let window = SelectWindow::new(&self.display);
         // let root = self.display.get_default_root_window()?;
 
@@ -88,7 +81,7 @@ impl GUI {
         use gl;
         use glutin::{
             self,
-            dpi::{PhysicalSize, PhysicalPosition},
+            dpi::{PhysicalPosition, PhysicalSize},
             os::unix::{WindowBuilderExt, WindowExt, XWindowType},
             ElementState, Event, EventsLoop, GlContext, GlWindow, KeyboardInput, MouseButton,
             MouseCursor, VirtualKeyCode, WindowBuilder, WindowEvent,
@@ -113,8 +106,9 @@ impl GUI {
             .with_decorations(false)
             .with_visibility(false)
             .with_always_on_top(true)
-            .with_dimensions(PhysicalSize::new(width.into(), height.into()).to_logical(mon.get_hidpi_factor()))
-            .with_fullscreen(Some(mon));
+            .with_dimensions(
+                PhysicalSize::new(width.into(), height.into()).to_logical(mon.get_hidpi_factor()),
+            ).with_fullscreen(Some(mon));
         let ctx = glutin::ContextBuilder::new()
             .with_vsync(false)
             .with_multisampling(4)
@@ -253,7 +247,7 @@ impl GUI {
 
             evl.poll_events(|event| match event {
                 Event::WindowEvent { event, .. } => match event {
-                    WindowEvent::CloseRequested | WindowEvent::Destroyed => running = false,
+                    WindowEvent::Destroyed => running = false,
                     WindowEvent::KeyboardInput {
                         input:
                             KeyboardInput {
@@ -269,6 +263,12 @@ impl GUI {
                                 rectw = 0.0;
                                 recth = 0.0;
                             } else {
+                                unsafe {
+                                    x11::xlib::XDestroyWindow(
+                                        self.display.as_raw(),
+                                        win.get_xlib_window().unwrap(),
+                                    )
+                                };
                                 running = false;
                             }
                         }
@@ -303,6 +303,12 @@ impl GUI {
                                 }
                                 ElementState::Released => {
                                     if down && rectw.abs() > 0.0 && recth.abs() > 0.0 {
+                                        unsafe {
+                                            x11::xlib::XDestroyWindow(
+                                                self.display.as_raw(),
+                                                win.get_xlib_window().unwrap(),
+                                            )
+                                        };
                                         running = false;
                                     }
                                     false
@@ -315,7 +321,6 @@ impl GUI {
                 },
                 _ => (),
             });
-
             win.swap_buffers().expect("couldn't swap buffers");
         }
         if rectw.abs() > 0.0 && recth.abs() > 0.0 {

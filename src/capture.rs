@@ -1,6 +1,7 @@
 use errors::ScreenshotError;
 
 use gui::GUI;
+use imlib2;
 use options::{Options, Region};
 
 /// The main capture routine.
@@ -13,6 +14,8 @@ pub fn capture(opt: &Options) -> Result<(), ScreenshotError> {
     };
 
     let capture = gui.capture_window(&opt, window_to_capture)?;
+
+    imlib2::context_set_image(&capture);
     capture.save_image(&opt.outfile)?;
 
     Ok(())
