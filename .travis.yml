@@ -34,7 +34,7 @@ deploy:
       secure: ZCA3+LjTzliSC3m9DjcEYZOsRhaI5r9LAHfuw5HuaLYbprbEVwqLCTV1ioe7F9dLPembqGoGEsVnWAsrAUP0C9BRUuOrZMYvTOS3qTwSX7pPc/fsNUzP9uc6XPIMQ7/QeakmpgVYvObt9/1Wxui715nPmj9h+YIB4P3BUT8VsufzG0LogNSTwkhicM19O9oFhoCg39qQBueBe2SrS35dqvofSoJlEk2wSBBesQ9xuw9goP8ZkTKD3w/ZmPUS9RuWi1FSzsUcnLGCEMwYxLk9CBnG9I0G8kvDF194UYq7YnlaK4sn4AG5UxkMYcWN573vb+KX56VoHa57Z7qNIoUy1Kk0MatIjPIxd2LQJSTl7I5sckfoq61wihRYYj8R1qI4V4mqBX+MHFwyfs7/XT2pVfPHeflvJ4MMZW5t+OYWv8LfwFgufbLyYS79ZkBIjVnk2ligSv8kSPcuTtnSzp6UJlHsEbRDlWcciAYA92d2bggz7BrSG+X1eDAVto+bGdAeAp5zgRPVKwbpA9aD52y2GmlMh4Z+GcjhF6U7z+2AYRalH9X8d4mSdQ7KuhFfigoR/84tO+kC5QeKnf3FfgXPzOimt8xCsd2MFDrg2sPvgFkQGyM0ihB9NnNBfiFrQrRP3+DyTCI3TqOfkz8QKe4h7DxefR1t+YvheNZjGtC8C+E=
     file_glob: true
     file:
-      - screenshot-*
+      - leanshot-*
     on:
       condition: $TRAVIS_RUST_VERSION = stable
       tags: true
