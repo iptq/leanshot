@@ -13,9 +13,9 @@ members = [".", "imlib2", "imlib2/imlib2-sys", "xlib"]
 failure = "0.1"
 gl = "0.10"
 glutin = "0.18"
-imlib2 = { version = "0.1", path = "imlib2" }
+imlib2 = { version = "0.1", path = "./imlib2" }
 nanovg = { version = "1.0.2", features = ["gl3"] }
 png = "0.12"
 structopt = "0.2"
 time = "0.1"
-xlib = { version = "0.1", path = "xlib" }
+xlib = { version = "0.1", path = "./xlib" }
