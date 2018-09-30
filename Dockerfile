@@ -9,4 +9,7 @@ RUN sudo apt-get update -y && sudo apt-get install -y\
     libimlib2-dev
 
 COPY . ./
-RUN sudo chown -R rust:rust .
+
+USER root
+ENV CARGO_HOME=/home/rust/.cargo
+ENV RUSTUP_HOME=/home/rust/.multirust
