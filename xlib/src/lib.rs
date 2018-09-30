@@ -25,7 +25,7 @@ mod cursorfont;
 pub use atom::Atom;
 pub use cursor::Cursor;
 pub use cursorfont::*;
-pub use display::{Display, GetDisplay};
+pub use display::{Display, GetDisplay, Grab};
 pub use drawable::Drawable;
 pub use errors::X11Error;
 pub use event::{Event, EventKind};

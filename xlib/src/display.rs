@@ -10,6 +10,8 @@ pub struct Display {
     inner: *mut x::Display,
 }
 
+pub struct Grab(pub(crate) *mut x::Display);
+
 /// Something that's part of a display.
 pub trait GetDisplay {
     /// Get the current display
@@ -28,6 +30,19 @@ impl Display {
             return Err(X11Error::DisplayOpenError);
         }
         Ok(Display { inner })
+    }
+
+    /// Create a Display for an existing connection
+    pub fn from_handle(handle: u64) -> Self {
+        Display {
+            inner: handle as *mut x::Display,
+        }
+    }
+
+    /// Grab
+    pub fn grab(&self) -> Grab {
+        unsafe { x::XGrabServer(self.inner) };
+        Grab(self.inner)
     }
 
     /// Wrapper around XCreateFontCursor
@@ -150,5 +165,11 @@ impl Display {
 impl Drop for Display {
     fn drop(&mut self) {
         unsafe { x::XCloseDisplay(self.inner) };
+    }
+}
+
+impl Drop for Grab {
+    fn drop(&mut self) {
+        unsafe { x::XUngrabServer(self.0) };
     }
 }
