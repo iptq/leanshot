@@ -12,7 +12,7 @@ extern crate png;
 #[macro_use]
 extern crate structopt;
 extern crate time;
-extern crate xlib;
+extern crate leanshot_xlib as xlib;
 
 mod capture;
 mod errors;

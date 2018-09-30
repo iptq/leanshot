@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate failure;
 extern crate imlib2_sys;
-extern crate xlib;
+extern crate leanshot_xlib as xlib;
 
 mod errors;
 mod image;

@@ -18,4 +18,4 @@ nanovg = { version = "1.0.2", features = ["gl3"] }
 png = "0.12"
 structopt = "0.2"
 time = "0.1"
-xlib = { version = "0.1", path = "./xlib" }
+leanshot_xlib = { version = "0.1", path = "./xlib" }
