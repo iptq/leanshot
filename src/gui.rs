@@ -87,11 +87,11 @@ impl GUI {
         // }
 
         use gl;
-        use glutin::{
+        use glutin::{self,
             dpi::LogicalSize, ElementState, Event, EventsLoop, GlContext, GlWindow, KeyboardInput,
             MouseButton, VirtualKeyCode, WindowBuilder, WindowEvent,
         };
-        use nanovg::{Color, Image, ImagePattern, PathOptions, StrokeOptions};
+        use nanovg::{self, Color, Image, ImagePattern, PathOptions, StrokeOptions};
         use std::{f32::consts, slice};
 
         // let attr = window.get_attributes()?;
