@@ -3,8 +3,8 @@ use std::path::Path;
 
 use imlib2_sys as im;
 
-use Error;
 use xlib::Drawable;
+use Error;
 
 /// A simple wrapper around Imlib_Image
 pub struct Image {
@@ -35,6 +35,22 @@ impl Image {
         };
         unsafe { im::imlib_context_set_image(image) };
         Ok(Image { inner: image })
+    }
+
+    /// Get width
+    pub fn get_width(&self) -> i32 {
+        unsafe {
+            im::imlib_context_set_image(self.inner);
+            im::imlib_image_get_width()
+        }
+    }
+
+    /// Get height
+    pub fn get_height(&self) -> i32 {
+        unsafe {
+            im::imlib_context_set_image(self.inner);
+            im::imlib_image_get_height()
+        }
     }
 
     /// Save this image

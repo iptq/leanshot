@@ -19,8 +19,8 @@ set -euo pipefail
 case `uname -s` in
     Linux)
         echo "Building static binaries using ekidd/rust-musl-builder"
-        docker build -f Dockerfile.check -t build-"$1"-image .
-        docker run -it --name build-"$1" build-"$1"-image
+        docker build -f Dockerfile -t build-"$1"-image .
+        docker run -it --name build-"$1" build-"$1"-image bash -c 'cargo check'
         docker rm build-"$1"
         docker rmi build-"$1"-image
         ;;

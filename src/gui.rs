@@ -23,6 +23,7 @@ impl GUI {
         let mut height = attr.get_height();
         let root = attr.get_root();
         let (mut x, mut y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
+        println!("{} {}", window.as_raw(), root.as_raw());
 
         imlib2::context_set_display(&self.display);
         let visual = Visual::default(&self.display, 0);
@@ -30,7 +31,16 @@ impl GUI {
 
         match opt.region {
             Region::Selection => {
-                let region = self.interactive_select(window)?;
+                let capture = Image2::create_from_drawable(
+                    window,
+                    0,
+                    x,
+                    y,
+                    width as i32,
+                    height as i32,
+                    true,
+                )?;
+                let region = self.interactive_select(capture)?;
                 x = region.x;
                 y = region.y;
                 width = region.width;
@@ -52,7 +62,7 @@ impl GUI {
     }
 
     /// Brings up an interactive selection GUI.
-    pub fn interactive_select(&self, window: Window) -> Result<Rectangle, ScreenshotError> {
+    pub fn interactive_select(&self, capture: Image2) -> Result<Rectangle, ScreenshotError> {
         // let window = SelectWindow::new(&self.display);
         // let root = self.display.get_default_root_window()?;
 
@@ -84,12 +94,13 @@ impl GUI {
         use nanovg::{Color, Image, ImagePattern, PathOptions, StrokeOptions};
         use std::{f32::consts, slice};
 
-        let attr = window.get_attributes()?;
-        let width = attr.get_width();
-        let height = attr.get_height();
-        let root = attr.get_root();
-        println!("{} {}", width, height);
-        let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
+        // let attr = window.get_attributes()?;
+        // let width = attr.get_width();
+        // let height = attr.get_height();
+        // let root = attr.get_root();
+        // let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
+        let width = capture.get_width();
+        let height = capture.get_height();
 
         let mut evl = EventsLoop::new();
         let mon = evl.get_primary_monitor();
@@ -114,13 +125,10 @@ impl GUI {
         // println!("size={:?} pos={:?} outer={:?}", win.get_inner_size(), win.get_inner_position(), win.get_outer_size());
         // println!("{:?}", win.get_hidpi_factor());
 
-        imlib2::context_set_display(&self.display);
-        let visual = Visual::default(&self.display, 0);
-        imlib2::context_set_visual(&visual);
-
-        let img = Image2::create_from_drawable(window, 0, x, y, width as i32, height as i32, true)?;
-        imlib2::context_set_image(&img);
+        // let img = Image2::create_from_drawable(window, 0, 0, 0, width as i32, height as i32, true)?;
+        imlib2::context_set_image(&capture);
         let len = (width * height) as usize;
+        // println!("{}", window.as_raw());
         let raw_data = unsafe { slice::from_raw_parts(imlib2::image_get_data(), len) };
 
         // convert ARGB to RGBA
