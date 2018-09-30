@@ -23,7 +23,6 @@ impl GUI {
         let mut height = attr.get_height();
         let root = attr.get_root();
         let (mut x, mut y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
-        println!("{} {}", window.as_raw(), root.as_raw());
 
         imlib2::context_set_display(&self.display);
         let visual = Visual::default(&self.display, 0);
@@ -89,7 +88,7 @@ impl GUI {
         use gl;
         use glutin::{
             self,
-            dpi::LogicalSize,
+            dpi::{PhysicalSize, PhysicalPosition},
             os::unix::{WindowBuilderExt, WindowExt, XWindowType},
             ElementState, Event, EventsLoop, GlContext, GlWindow, KeyboardInput, MouseButton,
             MouseCursor, VirtualKeyCode, WindowBuilder, WindowEvent,
@@ -112,8 +111,9 @@ impl GUI {
         let wb = WindowBuilder::new()
             .with_x11_window_type(XWindowType::Splash)
             .with_decorations(false)
+            .with_visibility(false)
             .with_always_on_top(true)
-            .with_dimensions(LogicalSize::new(width.into(), height.into()))
+            .with_dimensions(PhysicalSize::new(width.into(), height.into()).to_logical(mon.get_hidpi_factor()))
             .with_fullscreen(Some(mon));
         let ctx = glutin::ContextBuilder::new()
             .with_vsync(false)
@@ -135,20 +135,16 @@ impl GUI {
         let raw_data;
         {
             let _g = x.grab();
-            println!("grabbed");
             // let img = Image2::create_from_drawable(window, 0, 0, 0, width as i32, height as i32, true)?;
             imlib2::context_set_image(&capture);
-            println!("set contexted");
             len = (width * height) as usize;
             // println!("{}", window.as_raw());
             raw_data = unsafe { slice::from_raw_parts(imlib2::image_get_data(), len) };
-            println!("captured");
 
             unsafe {
                 win.make_current().expect("couldn't make window");
                 gl::load_with(|sym| win.get_proc_address(sym) as *const _);
             }
-            println!("maked");
         }
         mem::forget(x);
 
@@ -193,6 +189,9 @@ impl GUI {
         let mut recth = 0.0f64;
         let mut delayed_down = false;
         let mut redraw = true;
+
+        win.show();
+        win.set_position(PhysicalPosition::new(0.0, 0.0).to_logical(f));
         while running {
             if redraw {
                 // let size = win.get_inner_size().unwrap();
@@ -267,6 +266,8 @@ impl GUI {
                         (Some(VirtualKeyCode::Escape), ElementState::Released) => {
                             if down {
                                 down = false;
+                                rectw = 0.0;
+                                recth = 0.0;
                             } else {
                                 running = false;
                             }
