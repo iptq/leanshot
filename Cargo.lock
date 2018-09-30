@@ -365,6 +365,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "leanshot"
+version = "0.3.0"
+dependencies = [
+ "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gl 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "glutin 0.18.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "imlib2 0.1.0",
+ "nanovg 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "png 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
+ "xlib 0.1.0",
+]
+
+[[package]]
 name = "libc"
 version = "0.2.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -667,21 +682,6 @@ dependencies = [
 name = "scopeguard"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "screenshot"
-version = "0.3.0"
-dependencies = [
- "failure 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "gl 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "glutin 0.18.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "imlib2 0.1.0",
- "nanovg 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "png 0.12.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "structopt 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "time 0.1.40 (registry+https://github.com/rust-lang/crates.io-index)",
- "xlib 0.1.0",
-]
 
 [[package]]
 name = "semver"
