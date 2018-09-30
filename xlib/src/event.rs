@@ -1,7 +1,7 @@
 use libc;
 use x11::xlib as x;
 
-use xlib::X11Error;
+use X11Error;
 
 /// An x11 Event
 pub struct Event {

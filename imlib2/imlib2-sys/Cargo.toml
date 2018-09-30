@@ -8,3 +8,4 @@ build = "build.rs"
 path = "lib.rs"
 
 [build-dependencies]
+bindgen = "0.40"

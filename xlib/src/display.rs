@@ -3,7 +3,7 @@ use std::ffi::CString;
 use libc;
 use x11::xlib as x;
 
-use xlib::{Cursor, Event, Visual, Window, X11Error};
+use {Cursor, Event, Visual, Window, X11Error};
 
 /// A connection to an X server.
 pub struct Display {

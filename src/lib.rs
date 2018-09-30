@@ -4,22 +4,20 @@
 
 #[macro_use]
 extern crate failure;
-extern crate imlib2_sys;
-extern crate libc;
+extern crate gl;
+extern crate glutin;
+extern crate imlib2;
+extern crate nanovg;
 extern crate png;
 #[macro_use]
 extern crate structopt;
 extern crate time;
-extern crate x11;
+extern crate xlib;
 
 mod capture;
 mod errors;
 mod gui;
 mod options;
-mod window;
-
-pub mod imlib2;
-pub mod xlib;
 
 use errors::ScreenshotError;
 use structopt::StructOpt;
@@ -27,4 +25,11 @@ use xlib::Rectangle;
 
 pub use capture::capture;
 pub use options::{Options, Region};
-pub use window::SelectWindow;
+
+use failure::Error;
+
+#[allow(missing_docs)]
+pub fn main() -> Result<(), Error> {
+    let opt = Options::from_args();
+    capture(&opt).map(|_| ()).map_err(|err| err.into())
+}

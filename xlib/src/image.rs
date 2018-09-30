@@ -1,6 +1,6 @@
 use x11::xlib as x;
 
-use xlib::X11Error;
+use X11Error;
 
 /// A handle to an XImage.
 pub struct Image {
@@ -17,8 +17,10 @@ pub enum ImageByteOrder {
 
 /// The buffer pointed to by an XImage.
 pub struct PixBuffer {
-    pub(self) buf: *mut u8,
-    pub(self) size: usize,
+    /// The raw pointer to the buffer
+    pub buf: *mut u8,
+    /// The size of the buffer
+    pub size: usize,
 }
 
 impl Image {

@@ -3,7 +3,7 @@ use std::path::Path;
 
 use imlib2_sys as im;
 
-use imlib2::Error;
+use Error;
 use xlib::Drawable;
 
 /// A simple wrapper around Imlib_Image
@@ -44,10 +44,18 @@ impl Image {
         unsafe { im::imlib_save_image_with_error_return(path.as_ptr(), &mut error) };
         Ok(())
     }
+
+    /// Get raw image
+    pub fn as_raw(&self) -> im::Imlib_Image {
+        self.inner
+    }
 }
 
 impl Drop for Image {
     fn drop(&mut self) {
-        unsafe { im::imlib_free_image() };
+        unsafe {
+            im::imlib_context_set_image(self.inner);
+            im::imlib_free_image();
+        }
     }
 }

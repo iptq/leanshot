@@ -1,6 +1,6 @@
 use x11::xlib as x;
 
-use xlib::{GetDisplay, Image, Rectangle, X11Error};
+use {GetDisplay, Image, Rectangle, X11Error};
 
 /// Anything that's drawable
 pub trait Drawable: GetDisplay {

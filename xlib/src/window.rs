@@ -4,7 +4,7 @@ use std::mem;
 use libc;
 use x11::xlib as x;
 
-use xlib::{Display, Drawable, GetDisplay, Image, Rectangle, X11Error};
+use {Display, Drawable, GetDisplay, Image, Rectangle, X11Error};
 
 /// A wrapper around a window handle.
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -15,6 +15,7 @@ pub struct Window {
 
 /// Window Attributes
 pub struct WindowAttributes {
+    pub(super) display: *mut x::Display,
     pub(self) inner: *mut x::XWindowAttributes,
 }
 
@@ -60,7 +61,10 @@ impl Window {
         let result = unsafe { x::XGetWindowAttributes(self.display, self.inner, attr) };
         match result {
             0 => Err(X11Error::GetAttributesError),
-            _ => Ok(WindowAttributes { inner: attr }),
+            _ => Ok(WindowAttributes {
+                display: self.display,
+                inner: attr,
+            }),
         }
     }
 
@@ -121,6 +125,14 @@ impl WindowAttributes {
     /// Gets the height of the window
     pub fn get_height(&self) -> u32 {
         unsafe { (*self.inner).height as u32 }
+    }
+
+    /// Get the root window of this window
+    pub fn get_root(&self) -> Window {
+        Window {
+            display: self.display,
+            inner: unsafe { (*self.inner).root },
+        }
     }
 }
 

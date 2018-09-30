@@ -1,11 +1,10 @@
 use imlib2::{self, Image as Image2};
-use xlib::{Display, EventKind, Visual, Window};
+use xlib::{Display, Visual, Window};
 
 use errors::ScreenshotError;
 use Options;
 use Rectangle;
 use Region;
-use SelectWindow;
 
 pub struct GUI {
     pub(crate) display: Display,
@@ -22,7 +21,7 @@ impl GUI {
         let attr = window.get_attributes()?;
         let mut width = attr.get_width();
         let mut height = attr.get_height();
-        let root = self.display.get_default_root_window()?;
+        let root = attr.get_root();
         let (mut x, mut y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
 
         imlib2::context_set_display(&self.display);
@@ -31,7 +30,7 @@ impl GUI {
 
         match opt.region {
             Region::Selection => {
-                let region = self.interactive_select()?;
+                let region = self.interactive_select(window)?;
                 x = region.x;
                 y = region.y;
                 width = region.width;
@@ -53,29 +52,243 @@ impl GUI {
     }
 
     /// Brings up an interactive selection GUI.
-    pub fn interactive_select(&self) -> Result<Rectangle, ScreenshotError> {
-        let window = SelectWindow::new(&self.display);
-        let root = self.display.get_default_root_window()?;
+    pub fn interactive_select(&self, window: Window) -> Result<Rectangle, ScreenshotError> {
+        // let window = SelectWindow::new(&self.display);
+        // let root = self.display.get_default_root_window()?;
 
-        let root_im = root.get_image();
+        // let root_im = root.get_image();
 
-        let mut done = 0;
-        let mut button_press = false;
-        while done == 0 && self.display.pending()? > 0 {
-            let ev = self.display.next_event()?;
-            match ev.kind() {
-                EventKind::ButtonPress => {
-                    button_press = true;
-                }
-                EventKind::ButtonRelease => {
-                    if button_press {
-                        done = 1;
-                    }
-                    button_press = false;
-                }
-                _ => (),
-            }
+        // let mut done = 0;
+        // let mut button_press = false;
+        // while done == 0 && self.display.pending()? > 0 {
+        //     let ev = self.display.next_event()?;
+        //     match ev.kind() {
+        //         EventKind::ButtonPress => {
+        //             button_press = true;
+        //         }
+        //         EventKind::ButtonRelease => {
+        //             if button_press {
+        //                 done = 1;
+        //             }
+        //             button_press = false;
+        //         }
+        //         _ => (),
+        //     }
+        // }
+
+        use gl;
+        use glutin::{
+            dpi::LogicalSize, ElementState, Event, EventsLoop, GlContext, GlWindow, KeyboardInput,
+            MouseButton, VirtualKeyCode, WindowBuilder, WindowEvent,
+        };
+        use nanovg::{Color, Image, ImagePattern, PathOptions, StrokeOptions};
+        use std::{f32::consts, slice};
+
+        let attr = window.get_attributes()?;
+        let width = attr.get_width();
+        let height = attr.get_height();
+        let root = attr.get_root();
+        println!("{} {}", width, height);
+        let (x, y, _) = self.display.translate_coordinates(window, 0, 0, root)?;
+
+        let mut evl = EventsLoop::new();
+        let mon = evl.get_primary_monitor();
+
+        // TODO: handle error
+        let wb = WindowBuilder::new()
+            .with_decorations(false)
+            .with_always_on_top(true)
+            .with_dimensions(LogicalSize::new(width.into(), height.into()))
+            .with_fullscreen(Some(mon));
+        let ctx = glutin::ContextBuilder::new()
+            .with_vsync(false)
+            .with_multisampling(4)
+            .with_srgb(true);
+        let win = GlWindow::new(wb, ctx, &evl).expect("couldn't make window");
+        let f = win.get_hidpi_factor() as f64;
+        unsafe {
+            win.make_current().expect("couldn't make window");
+            gl::load_with(|sym| win.get_proc_address(sym) as *const _);
         }
-        Err(ScreenshotError::Error)
+        // win.set_inner_size((width, height).into());
+        // println!("size={:?} pos={:?} outer={:?}", win.get_inner_size(), win.get_inner_position(), win.get_outer_size());
+        // println!("{:?}", win.get_hidpi_factor());
+
+        imlib2::context_set_display(&self.display);
+        let visual = Visual::default(&self.display, 0);
+        imlib2::context_set_visual(&visual);
+
+        let img = Image2::create_from_drawable(window, 0, x, y, width as i32, height as i32, true)?;
+        imlib2::context_set_image(&img);
+        let len = (width * height) as usize;
+        let raw_data = unsafe { slice::from_raw_parts(imlib2::image_get_data(), len) };
+
+        // convert ARGB to RGBA
+        let mut data = vec![0u32; raw_data.len()];
+        data.copy_from_slice(raw_data);
+        for i in &mut data {
+            // fix the colors
+            *i = (*i & 0xff00ff00) | ((*i & 0xff) << 16) | ((*i >> 16) & 0xff);
+        }
+
+        let ctx = nanovg::ContextBuilder::new()
+            .build()
+            .expect("couldn't init nanovg");
+
+        let image = Image::new(&ctx)
+            .build_from_rgba(width as usize, height as usize, data.as_slice())
+            .expect("couldn't create image");
+
+        let mut running = true;
+        let mut down = false;
+        // drag start
+        let mut dx = -1.0f64;
+        let mut dy = -1.0f64;
+        // curr mouse
+        let mut mx = -1.0f64;
+        let mut my = -1.0f64;
+        // rect
+        let mut rectw = 0.0f64;
+        let mut recth = 0.0f64;
+        let mut delayed_down = false;
+        while running {
+            let mut redraw = true;
+            evl.poll_events(|event| match event {
+                Event::WindowEvent { event, .. } => match event {
+                    WindowEvent::CloseRequested | WindowEvent::Destroyed => running = false,
+                    WindowEvent::KeyboardInput {
+                        input:
+                            KeyboardInput {
+                                virtual_keycode,
+                                state,
+                                ..
+                            },
+                        ..
+                    } => match (virtual_keycode, state) {
+                        (Some(VirtualKeyCode::Escape), ElementState::Released) => {
+                            if down {
+                                down = false;
+                            } else {
+                                running = false;
+                            }
+                        }
+                        _ => (),
+                    },
+                    WindowEvent::CursorMoved { position, .. } => {
+                        mx = position.x;
+                        my = position.y;
+                        if down {
+                            if delayed_down {
+                                dx = mx;
+                                dy = my;
+                                delayed_down = false;
+                            } else {
+                                redraw = true;
+                            }
+                            rectw = mx - dx;
+                            recth = my - dy;
+                        }
+                    }
+                    WindowEvent::MouseInput { button, state, .. } => match button {
+                        MouseButton::Left => {
+                            down = match state {
+                                ElementState::Pressed => {
+                                    delayed_down = true;
+                                    if mx < 0.0 || my < 0.0 {
+                                    } else {
+                                        dx = mx;
+                                        dy = my;
+                                    }
+                                    true
+                                }
+                                ElementState::Released => {
+                                    if down && rectw.abs() > 0.0 && recth.abs() > 0.0 {
+                                        running = false;
+                                    }
+                                    false
+                                }
+                            };
+                        }
+                        _ => (),
+                    },
+                    _ => (),
+                },
+                _ => (),
+            });
+
+            if !redraw {
+                // don't do anything if it's not moved
+                continue;
+            }
+
+            // let size = win.get_inner_size().unwrap();
+            // let (width, height) = (size.width as i32, size.height as i32);
+
+            unsafe {
+                gl::Viewport(0, 0, width as i32, height as i32);
+                gl::ClearColor(0.3, 0.3, 0.32, 1.0);
+                gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT | gl::STENCIL_BUFFER_BIT);
+            }
+
+            let (width, height) = (width as f64, height as f64);
+            ctx.frame((width as f32, height as f32), f as f32, |frame| {
+                let path_opts = PathOptions::default();
+                frame.path(
+                    |path| {
+                        path.rect((0.0, 0.0), ((width * f) as f32, (height * f) as f32));
+                        // path.fill(Color::from_rgba(200, 200, 200, 255), Default::default());
+                        path.fill(
+                            ImagePattern {
+                                image: &image,
+                                origin: (0.0, 0.0),
+                                size: (width as f32, height as f32),
+                                angle: 0.0 / 180.0 * consts::PI,
+                                alpha: 1.0,
+                            },
+                            Default::default(),
+                        )
+                    },
+                    path_opts,
+                );
+                if down && rectw.abs() > 0.0 && recth.abs() > 0.0 {
+                    frame.path(
+                        |path| {
+                            path.rect(
+                                ((dx * f) as f32, (dy * f) as f32),
+                                ((rectw * f) as f32, (recth * f) as f32),
+                            );
+                            path.stroke(
+                                Color::from_rgba(0, 0, 0, 255),
+                                StrokeOptions {
+                                    width: 2.0,
+                                    ..Default::default()
+                                },
+                            );
+                        },
+                        path_opts,
+                    );
+                }
+            });
+
+            win.swap_buffers().expect("couldn't swap buffers");
+        }
+        if rectw.abs() > 0.0 && recth.abs() > 0.0 {
+            let mut x = dx;
+            let mut y = dy;
+            if rectw < 0.0 {
+                x += rectw;
+            }
+            if recth < 0.0 {
+                y += recth;
+            }
+            Ok(Rectangle::new(
+                (x * f) as i32,
+                (y * f) as i32,
+                (rectw.abs() * f) as u32,
+                (recth.abs() * f) as u32,
+            ))
+        } else {
+            Err(ScreenshotError::Error)
+        }
     }
 }

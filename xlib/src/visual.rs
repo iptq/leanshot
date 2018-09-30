@@ -1,6 +1,6 @@
 use x11::xlib as x;
 
-use xlib::Display;
+use Display;
 
 /// A wrapper around a Visual
 pub struct Visual {

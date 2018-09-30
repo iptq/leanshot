@@ -5,16 +5,18 @@ version = "0.3.0"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
 
 [workspace]
-members = [".", "imlib2-sys"]
+members = [".", "imlib2", "imlib2/imlib2-sys", "xlib"]
 
 [lib]
 crate-type = ["dylib", "rlib"]
 
 [dependencies]
 failure = "0.1"
+gl = "0.10"
+glutin = "0.18"
+imlib2 = { path = "imlib2" }
+nanovg = { version = "1.0.2", features = ["gl3"] }
 png = "0.12"
-imlib2-sys = { path = "imlib2-sys" }
-libc = "0.2"
 structopt = "0.2"
 time = "0.1"
-x11 = { version = "2.18", features = ["xlib"] }
+xlib = { path = "xlib" }
