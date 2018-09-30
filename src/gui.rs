@@ -1,5 +1,5 @@
 use imlib2::{self, Image as Image2};
-use xlib::{Display, Visual, Window};
+use xlib::{self, Display, Visual, Window};
 
 use errors::ScreenshotError;
 use Options;
@@ -116,7 +116,25 @@ impl GUI {
             .with_multisampling(4)
             .with_srgb(true);
         let win = GlWindow::new(wb, ctx, &evl).expect("couldn't make window");
+
+        // crosshair
         win.set_cursor(MouseCursor::Crosshair);
+
+        // change window type
+        {
+            use glutin::os::unix::WindowExt;
+            use xlib::Atom;
+            match win.get_xlib_window() {
+                Some(id) => {
+                    let w = Window::create_from_handle(&self.display, id)?;
+                    let key = Atom::new(&self.display, "_NET_WM_WINDOW_TYPE", false)?;
+                    let val = Atom::new(&self.display, "_NET_WM_WINDOW_TYPE_SPLASH", false)?;
+                    w.change_property(&key, &val);
+                }
+                _ => (),
+            }
+        }
+
         let f = win.get_hidpi_factor() as f64;
         unsafe {
             win.make_current().expect("couldn't make window");

@@ -13,6 +13,7 @@ extern crate png;
 extern crate structopt;
 extern crate leanshot_xlib as xlib;
 extern crate time;
+extern crate x11;
 
 mod capture;
 mod errors;

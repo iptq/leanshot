@@ -5,8 +5,9 @@
 #[macro_use]
 extern crate failure;
 extern crate libc;
-extern crate x11;
+pub extern crate x11;
 
+mod atom;
 mod cursor;
 mod display;
 mod drawable;
@@ -21,6 +22,7 @@ mod window;
 #[allow(missing_docs)]
 mod cursorfont;
 
+pub use atom::Atom;
 pub use cursor::Cursor;
 pub use cursorfont::*;
 pub use display::{Display, GetDisplay};

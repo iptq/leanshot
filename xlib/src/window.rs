@@ -4,7 +4,7 @@ use std::mem;
 use libc;
 use x11::xlib as x;
 
-use {Display, Drawable, GetDisplay, Image, Rectangle, X11Error};
+use {Atom, Display, Drawable, GetDisplay, Image, Rectangle, X11Error};
 
 /// A wrapper around a window handle.
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -53,6 +53,14 @@ impl Window {
         })
     }
 
+    /// Create a new Window instance from an existing ID
+    pub fn create_from_handle(display: &Display, id: u64) -> Result<Window, X11Error> {
+        Ok(Window {
+            display: display.as_raw(),
+            inner: id,
+        })
+    }
+
     /// Get window attributes.
     pub fn get_attributes(&self) -> Result<WindowAttributes, X11Error> {
         let attr = unsafe {
@@ -85,6 +93,25 @@ impl Window {
                 attr.get_height(),
             ),
         )
+    }
+
+    /// Change window property
+    // TODO: make it more general
+    pub fn change_property(&self, key: &Atom, val: &Atom) {
+        use std::mem::transmute;
+        let v = val.as_raw();
+        unsafe {
+            x::XChangeProperty(
+                self.display,
+                self.inner,
+                key.as_raw(),
+                x::XA_ATOM,
+                32,
+                x::PropModeReplace,
+                transmute(&v),
+                1,
+            );
+        }
     }
 }
 
