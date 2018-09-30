@@ -1,6 +1,6 @@
 [package]
 name = "imlib2"
-version = "0.1.0"
+version = "0.1.1"
 description = "imlib2 bindings"
 license-file = "../LICENSE"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
