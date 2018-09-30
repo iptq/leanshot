@@ -7,5 +7,5 @@ authors = ["Michael Zhang <failed.down@gmail.com>"]
 
 [dependencies]
 failure = "0.1"
-imlib2-sys = { path = "imlib2-sys" }
-leanshot_xlib = { path = "../xlib" }
+imlib2-sys = { version = "0.1", path = "imlib2-sys" }
+leanshot_xlib = { version = "0.1", path = "../xlib" }
