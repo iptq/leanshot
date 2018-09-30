@@ -87,6 +87,7 @@ impl GUI {
             MouseCursor, VirtualKeyCode, WindowBuilder, WindowEvent,
         };
         use nanovg::{self, Image, ImagePattern, PathOptions, StrokeOptions};
+        use x11;
         use std::{f32::consts, mem, slice};
 
         // let attr = window.get_attributes()?;

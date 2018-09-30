@@ -1,6 +1,8 @@
 leanshot
 ========
 
+[![](https://api.travis-ci.org/iptq/leanshot.svg?branch=develop)](https://travis-ci.org/iptq/leanshot)
+
 Screenshot-capturing utility.
 
 Installation
