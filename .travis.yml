@@ -3,10 +3,10 @@ sudo: required
 dist: trusty
 
 script:
-  - ./ci/check.sh screenshot
+  - if [ -z "$TRAVIS_TAG" ]; then ./.ci/run.sh check leanshot; fi
 
 before_deploy:
-  - ./ci/build-release.sh screenshot ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
+  - ./.ci/run.sh build leanshot ${TRAVIS_TAG}-${TRAVIS_OS_NAME}
 
 deploy:
   - provider: releases
