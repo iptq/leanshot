@@ -11,8 +11,8 @@ extern crate nanovg;
 extern crate png;
 #[macro_use]
 extern crate structopt;
-extern crate time;
 extern crate leanshot_xlib as xlib;
+extern crate time;
 
 mod capture;
 mod errors;

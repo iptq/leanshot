@@ -87,9 +87,9 @@ impl GUI {
         // }
 
         use gl;
-        use glutin::{self,
-            dpi::LogicalSize, ElementState, Event, EventsLoop, GlContext, GlWindow, KeyboardInput,
-            MouseButton, VirtualKeyCode, WindowBuilder, WindowEvent,
+        use glutin::{
+            self, dpi::LogicalSize, ElementState, Event, EventsLoop, GlContext, GlWindow,
+            KeyboardInput, MouseButton, MouseCursor, VirtualKeyCode, WindowBuilder, WindowEvent,
         };
         use nanovg::{self, Color, Image, ImagePattern, PathOptions, StrokeOptions};
         use std::{f32::consts, slice};
@@ -116,6 +116,7 @@ impl GUI {
             .with_multisampling(4)
             .with_srgb(true);
         let win = GlWindow::new(wb, ctx, &evl).expect("couldn't make window");
+        win.set_cursor(MouseCursor::Crosshair);
         let f = win.get_hidpi_factor() as f64;
         unsafe {
             win.make_current().expect("couldn't make window");
