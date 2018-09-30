@@ -5,16 +5,21 @@ leanshot
 
 Screenshot-capturing utility.
 
+Requirements
+------------
+
+You must have imlib2 and OpenGL installed. Fortunately, these are relatively common libraries.
+
 Installation
 ------------
 
-So far, only installation from crates.io is supported:
+Binary distributions are available on the [releases](https://github.com/iptq/leanshot/releases) page.
+
+To install from crates.io, use:
 
 ```
 cargo install leanshot
 ```
-
-Binary distributions will soon be available on the releases page.
 
 Example Integration
 -------------------
