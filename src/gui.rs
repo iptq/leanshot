@@ -1,5 +1,5 @@
 use imlib2::{self, Image as Image2};
-use xlib::{self, Display, Visual, Window};
+use xlib::{Display, Visual, Window};
 
 use errors::ScreenshotError;
 use Options;
