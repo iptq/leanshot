@@ -1,7 +1,7 @@
 [package]
 name = "leanshot"
 description = "Screenshot capture for Linux."
-version = "0.3.2"
+version = "0.3.3"
 repository = "https://github.com/iptq/leanshot"
 license-file = "LICENSE"
 authors = ["Michael Zhang <failed.down@gmail.com>"]
@@ -11,12 +11,12 @@ members = [".", "imlib2", "imlib2/imlib2-sys", "xlib"]
 
 [dependencies]
 failure = "0.1"
-gl = "0.10"
-glutin = "0.18"
+gl = "0.11"
+glutin = "0.19"
 imlib2 = { version = "0.1", path = "./imlib2" }
 leanshot_xlib = { version = "0.1", path = "./xlib" }
 nanovg = { version = "1.0.2", features = ["gl3"] }
-png = "0.12"
+png = "0.14"
 structopt = "0.2"
 time = "0.1"
 x11 = { version = "2.18", features = ["xlib"] }

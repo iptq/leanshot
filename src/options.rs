@@ -13,7 +13,7 @@ pub enum Region {
 /// Optiosn for screenshot
 #[derive(StructOpt)]
 pub struct Options {
-    /// The region to select
+    /// The region to select (fullscreen | window | select)
     #[structopt(parse(try_from_str = "Region::from_str"))]
     pub region: Region,
 

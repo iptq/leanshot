@@ -2,6 +2,7 @@ leanshot
 ========
 
 [![](https://api.travis-ci.org/iptq/leanshot.svg?branch=develop)](https://travis-ci.org/iptq/leanshot)
+[![dependency status](https://deps.rs/repo/github/iptq/leanshot/status.svg)](https://deps.rs/repo/github/iptq/leanshot)
 
 Screenshot-capturing utility.
 
