@@ -1,4 +1,6 @@
 leanshot
 ========
 
-Moved to [sourcehut](https://git.sr.ht/~iptq/leanshot).
+Moved to [my self hosted gitea][1].
+
+[1]: https://git.mzhang.io/michael/leanshot
